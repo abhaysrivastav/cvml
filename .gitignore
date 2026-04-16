@@ -1,0 +1,4 @@
+# Semantic search generated artifacts and local datasets
+Semantic-Search-Transformers/arxivData.json
+Semantic-Search-Transformers/embeddings.pkl
+Semantic-Search-Transformers/paper_ids.pkl
