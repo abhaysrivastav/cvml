@@ -1,0 +1,37 @@
+@startuml
+title Semantic Search Architecture (Transformers + FAISS)
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+actor "User" as U
+
+rectangle "Notebook Workflow" {
+  component "Data Loader\n(arxivData.json -> DataFrame)" as DL
+  component "Preprocessing\n(drop columns, label encoding)" as PP
+  component "SentenceTransformer\nDistilBERT Embedding Model" as EM
+  component "Embedding Storage\nembeddings.pkl, paper_ids.pkl" as ES
+  component "FAISS Index\nIndexFlatL2 + IndexIDMap" as FI
+  component "Retriever\nTop-k Nearest Neighbors" as RT
+  component "Result Formatter\nTitle + Summary + Distance" as RF
+}
+
+U --> RT : Free-text query / summary
+DL --> PP
+PP --> EM : summaries
+EM --> ES : embedding vectors
+ES --> FI : load float32 vectors + ids
+RT --> EM : encode query
+EM --> RT : query vector
+RT --> FI : search(query, k)
+FI --> RT : distances + ids
+RT --> RF
+RF --> U : ranked results
+
+note bottom of FI
+  Uses vector similarity search.
+  Exact L2 search in this notebook.
+end note
+
+@enduml
